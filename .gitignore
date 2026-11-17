@@ -1,0 +1,8 @@
+/.env
+/.env.*
+!/.env.example
+/.env.local.php
+/.phpunit.cache/
+/public/bundles/
+/var/
+/vendor/

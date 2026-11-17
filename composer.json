@@ -1,0 +1,45 @@
+{
+  "name": "nbkxkt/dind-symfony-postgres-demo",
+  "type": "project",
+  "license": "MIT",
+  "description": "A Symfony page reading non-sensitive sample rows from PostgreSQL inside an isolated nested Docker engine.",
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "require": {
+    "php": ">=8.2",
+    "ext-ctype": "*",
+    "ext-iconv": "*",
+    "ext-pdo": "*",
+    "ext-pdo_pgsql": "*",
+    "doctrine/dbal": "^4.6",
+    "doctrine/doctrine-bundle": "^2.19",
+    "doctrine/doctrine-migrations-bundle": "^3.7",
+    "symfony/console": "7.4.*",
+    "symfony/dotenv": "7.4.*",
+    "symfony/flex": "^2",
+    "symfony/framework-bundle": "7.4.*",
+    "symfony/runtime": "7.4.*",
+    "symfony/twig-bundle": "7.4.*",
+    "symfony/yaml": "7.4.*"
+  },
+  "config": {
+    "allow-plugins": {
+      "php-http/discovery": true,
+      "symfony/flex": true,
+      "symfony/runtime": true
+    },
+    "sort-packages": true
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/",
+      "DoctrineMigrations\\": "migrations/"
+    }
+  },
+  "extra": {
+    "symfony": {
+      "allow-contrib": false,
+      "require": "7.4.*"
+    }
+  }
+}

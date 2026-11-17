@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>{% block title %}Démo Symfony dans le DIND{% endblock %}</title>
+    <style>
+        :root { font-family: system-ui, sans-serif; color: #182231; background: #f1f5f9; }
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 24px; }
+        main { width: min(760px, 100%); margin: 0 auto; }
+        .card { padding: clamp(18px, 4vw, 32px); border: 1px solid #d7e0eb; border-radius: 16px; background: #fff; box-shadow: 0 12px 36px #18304b12; }
+        h1 { margin: 0 0 8px; font-size: clamp(1.45rem, 4vw, 2rem); line-height: 1.2; }
+        .intro { margin: 0 0 22px; color: #526176; line-height: 1.55; }
+        .badge { display: inline-flex; margin-bottom: 18px; padding: 5px 10px; border-radius: 999px; background: #e1f5ec; color: #17613c; font-size: .82rem; font-weight: 700; }
+        .table-wrap { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 12px 10px; border-bottom: 1px solid #e4eaf1; }
+        th { color: #43536a; font-size: .9rem; }
+        td:last-child, th:last-child { text-align: right; }
+        .foot { margin: 18px 0 0; color: #627187; font-size: .85rem; line-height: 1.5; }
+        @media (max-width: 480px) { body { padding: 12px; } th, td { padding: 10px 6px; } }
+    </style>
+</head>
+<body>
+<main>{% block body %}{% endblock %}</main>
+</body>
+</html>
