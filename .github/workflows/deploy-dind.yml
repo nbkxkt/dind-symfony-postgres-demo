@@ -1,0 +1,67 @@
+name: Deploy Symfony demo to DIND
+
+on:
+  push:
+    branches:
+      - dev
+
+permissions: {}
+
+concurrency:
+  group: dind-symfony-demo-dev
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy pushed dev commit
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Send signed deployment request
+        env:
+          DEPLOY_WEBHOOK_URL: ${{ secrets.DEPLOY_WEBHOOK_URL }}
+          DEPLOY_WEBHOOK_SECRET: ${{ secrets.DEPLOY_WEBHOOK_SECRET }}
+          DEPLOY_REF: ${{ github.ref }}
+          DEPLOY_SHA: ${{ github.sha }}
+        run: |
+          python3 - <<'PYTHON'
+          import hashlib
+          import hmac
+          import json
+          import os
+          import urllib.error
+          import urllib.parse
+          import urllib.request
+
+          url = os.environ["DEPLOY_WEBHOOK_URL"]
+          secret = os.environ["DEPLOY_WEBHOOK_SECRET"].encode()
+          ref = os.environ["DEPLOY_REF"]
+          sha = os.environ["DEPLOY_SHA"]
+          parsed = urllib.parse.urlsplit(url)
+          if parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password or parsed.fragment:
+              raise SystemExit("DEPLOY_WEBHOOK_URL must be a direct HTTPS URL")
+          if len(secret) < 32:
+              raise SystemExit("DEPLOY_WEBHOOK_SECRET must contain at least 32 bytes")
+          if ref != "refs/heads/dev" or len(sha) != 40:
+              raise SystemExit("unexpected ref or commit SHA")
+          payload = json.dumps({
+              "repository": "nbkxkt/dind-symfony-postgres-demo",
+              "ref": ref,
+              "after": sha,
+          }, separators=(",", ":")).encode()
+          signature = "sha256=" + hmac.new(secret, payload, hashlib.sha256).hexdigest()
+          request = urllib.request.Request(
+              url,
+              data=payload,
+              headers={"Content-Type": "application/json", "X-Deploy-Signature": signature},
+              method="POST",
+          )
+          try:
+              with urllib.request.urlopen(request, timeout=900) as response:
+                  result = json.loads(response.read())
+          except urllib.error.HTTPError as error:
+              raise SystemExit(f"deployment endpoint returned HTTP {error.code}") from None
+          if result.get("status") != "deployed" or result.get("sha") != sha:
+              raise SystemExit("deployment endpoint did not confirm the requested commit")
+          print(f"Deployed commit {sha}")
+          PYTHON
